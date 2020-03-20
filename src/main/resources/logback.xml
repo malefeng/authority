@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+    <!-- 控制台打印 -->
+	 <appender name="consoleFront" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                %date{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%thread]%logger{56}.%method:%L -%msg%n
+            </pattern>
+        </layout>
+    </appender>
+
+    <!-- 业务日志 -->
+    <appender name="fileInfoFront" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+             <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>
+                %date{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%thread]%logger{56}.%method:%L -%msg%n
+            </pattern>
+        </encoder>
+        <!-- 滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 路径 -->
+            <fileNamePattern>logs/front.info.%d.log</fileNamePattern>
+            <!-- 控制保留的归档文件的最大数量，超出数量就删除旧文件 -->
+            <MaxHistory>100</MaxHistory>
+        </rollingPolicy>
+    </appender>
+    <!-- 异常日志 -->
+    <appender name="fileErrorFront" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>
+                %date{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%thread]%logger{56}.%method:%L -%msg%n
+            </pattern>
+        </encoder>
+        <!-- 设置滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 路径 -->
+            <fileNamePattern>logs/front.err.%d.log</fileNamePattern>
+            <!-- 控制保留的归档文件的最大数量，超出数量就删除旧文件 -->
+             <MaxHistory>100</MaxHistory>
+        </rollingPolicy>
+    </appender>
+    <!-- 网关流量日志 -->
+    <appender name="zuulFileInfoFront" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <encoder>
+            <pattern>
+                %date{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%thread]%logger{56}.%method:%L -%msg%n
+            </pattern>
+        </encoder>
+        <!-- 滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 路径 -->
+            <fileNamePattern>logs/front.zuul.info.%d.log</fileNamePattern>
+            <!-- 控制保留的归档文件的最大数量，超出数量就删除旧文件 -->
+            <MaxHistory>100</MaxHistory>
+        </rollingPolicy>
+    </appender>
+    <logger name="com.innove.authority.config.PrintZuulRequestLogFilter"  level="INFO" additivity="false" >
+        <appender-ref ref="zuulFileInfoFront"/>
+    </logger>
+   <root level="INFO">  
+        <appender-ref ref="consoleFront"/>
+        <appender-ref ref="fileInfoFront"/>
+        <appender-ref ref="fileErrorFront"/>
+    </root>
+</configuration>

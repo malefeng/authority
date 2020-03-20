@@ -1,0 +1,97 @@
+server:
+  port: 20001
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://semir:sm2020@52.130.77.219:8761/eureka/
+
+zuul:
+  host:
+    #超时时间-配置url时生效
+    max-per-route-connections: 60000
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 60000
+  routes:
+    basic-wechat:
+      path: /wechat/**
+      serviceId: front_server
+      customSensitiveHeaders: true
+#超时时间-配置serviceId时生效
+ribbon:
+  ReadTimeout: 60000  # 单位毫秒数
+  SocketTimeout: 60000
+
+endpoints:
+  shutdown:
+    enabled: true
+    sensitive: false
+
+hystrix:
+  command:
+    c4i-store:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000000
+spring:
+  application:
+    name: authority
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://106.13.160.198:3306/authority?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: root
+    password: Innovent@602
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 6000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+  redis:
+#    host: 10.195.5.13
+    host: 52.130.77.219
+    port: 6379
+    password: sm@2020&
+    database: 0
+    timeout: 5s
+    jedis:
+      pool:
+        #最大连接数据库连接数,设 0 为没有限制
+        max-active: 8
+        #最大等待连接中的数量,设 0 为没有限制
+        max-idle: 8
+        #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
+        max-wait: -1ms
+        #最小等待连接中的数量,设 0 为没有限制
+        min-idle: 4
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+        min-idle: 0
+      shutdown-timeout: 100ms
+
+#mapper
+mapper:
+  not-empty: false
+  identity: MYSQL
+
+logging:
+  level:
+    com.innove.authority.dao.mapper : debug
+#    com.netflix: DEBUG
+
+pproperty:
+  wechat:
+    getUserInfoUrl: https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo
+    getAccessTokenUrl: https://qyapi.weixin.qq.com/cgi-bin/gettoken
